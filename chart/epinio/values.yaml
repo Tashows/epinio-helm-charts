@@ -50,6 +50,7 @@ image:
     groupid: 1000
 appChart:
   default: https://github.com/epinio/helm-charts/releases/download/epinio-application-0.1.26/epinio-application-0.1.26.tgz
+  configurable_sa: https://github.com/Tashows/epinio-helm-charts/releases/download/0.1.26/epinio-application-w-serviceaccountname-0.1.26.tgz
 server:
   # increase this value to increase all timeouts by the same factor
   timeoutMultiplier: 1
