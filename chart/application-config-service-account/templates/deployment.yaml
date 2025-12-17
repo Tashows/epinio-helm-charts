@@ -25,7 +25,7 @@ spec:
         epinio.io/stage-id: {{ .Values.epinio.stageID | quote }}
         epinio.io/app-container: {{ include "epinio-truncate" .Values.epinio.appName }}
     spec:
-      serviceAccountName: {{ .Values.epinio.serviceAccountName | default .Release.Namespace }}
+      serviceAccountName: {{ .Values.userConfig.serviceAccountName | default .Release.Namespace }}
       automountServiceAccountToken: true
       {{- with .Values.epinio.configurations }}
       volumes:
