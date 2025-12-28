@@ -1,3 +1,4 @@
+{{- if include "epinio-app-listening-port" . }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -17,3 +18,4 @@ spec:
   selector:
     {{- include "epinio-application.selectorLabels" . | nindent 4 }}
   type: ClusterIP
+{{- end }}
