@@ -69,3 +69,28 @@ App name for label
 {{- define "label-name" -}}
 {{ default .Values.epinio.appName (default (dict "appName" "") .Values.userConfig).appName | quote }}
 {{- end }}
+
+{{/*
+Define resources for pods
+*/}}
+{{- define "epinio-application.resources" -}}
+resources:
+	{{- if or .Values.userConfig.resourcesLimitsCpu .Values.userConfig.resourcesLimitsMemory }}
+	limits:
+		{{- if .Values.userConfig.resourcesLimitsCpu }}
+		cpu: {{ .Values.userConfig.resourcesLimitsCpu | quote }}
+		{{- end }}
+		{{- if .Values.userConfig.resourcesLimitsMemory }}
+		memory: {{ .Values.userConfig.resourcesLimitsMemory | quote }}
+		{{- end }}
+	{{- end }}
+	{{- if or .Values.userConfig.resourcesRequestsCpu .Values.userConfig.resourcesRequestsMemory }}
+	requests:
+		{{- if .Values.userConfig.resourcesRequestsCpu }}
+		cpu: {{ .Values.userConfig.resourcesRequestsCpu | quote }}
+		{{- end }}
+		{{- if .Values.userConfig.resourcesRequestsMemory }}
+		memory: {{ .Values.userConfig.resourcesRequestsMemory | quote }}
+		{{- end }}
+	{{- end }}
+{{- end }}
