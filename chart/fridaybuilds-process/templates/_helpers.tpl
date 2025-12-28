@@ -26,8 +26,8 @@ epinio.io/created-by: {{ .Values.epinio.username | quote }}
 Selector labels
 */}}
 {{- define "epinio-application.selectorLabels" -}}
-app.kubernetes.io/name: {{ default .Values.epinio.appName (default (dict "appName" "") .Values.userConfig).appName | quote }}
-app.kubernetes.io/component: {{ printf "%s-process" (default "web" (default (dict "processName" "") .Values.userConfig).processName) | quote }}
+app.kubernetes.io/name: {{ include "label-name" . }}
+app.kubernetes.io/component: {{ include "label-component" . }}
 {{- end }}
 
 {{/*
@@ -54,4 +54,18 @@ Application listening port
 */}}
 {{- define "epinio-app-listening-port" -}}
 {{ default "" (default (dict "appListeningPort" "") .Values.userConfig).appListeningPort }}
+{{- end }}
+
+{{/*
+App/Pod component name
+*/}}
+{{- define "label-component" -}}
+{{ printf "%s-process" (default "web" (default (dict "processName" "") .Values.userConfig).processName) | quote }}
+{{- end }}
+
+{{/*
+App name for label
+*/}}
+{{- define "label-name" -}}
+{{ default .Values.epinio.appName (default (dict "appName" "") .Values.userConfig).appName | quote }}
 {{- end }}
