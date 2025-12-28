@@ -2,7 +2,7 @@ apiVersion: application.epinio.io/v1
 kind: AppChart
 metadata:
   namespace: {{ .Release.Namespace }}
-  name: fridaybuilds-app
+  name: fridaybuilds-process
   labels:
     app.kubernetes.io/component: epinio
     app.kubernetes.io/instance: default
@@ -16,10 +16,14 @@ spec:
   settings:
     appListeningPort:
       type: "integer"
-    "resources.limits":
-      type: "map"
-    "resources.requests":
-      type: "map"
+    resourcesLimitsCpu:
+      type: "string"
+    resourcesLimitsMemory:
+      type: "string"
+    resourcesRequestsCpu:
+      type: "string"
+    resourcesRequestsMemory:
+      type: "string"
     commandArgs:
       type: "string"
     appName:
