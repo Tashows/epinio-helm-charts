@@ -64,10 +64,7 @@ spec:
         {{- end}}
         image: {{ .Values.epinio.imageURL }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- with .Values.userConfig.resources }}
-        resources:
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
+        {{- include "epinio-application.resources" . | nindent 8 }}
         {{- with .Values.userConfig.commandArgs }}
         args:
           {{- range splitList " " . }}
