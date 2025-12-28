@@ -1,6 +1,6 @@
 apiVersion: v2
-name: epinio-application
-description: The helm chart for epinio applications to be deployed by
+name: fridaybuilds-process
+description: The helm chart for fridaybuilds processes to be deployed by
 icon: https://raw.githubusercontent.com/epinio/helm-charts/main/assets/epinio.png
 home: https://github.com/epinio/epinio
 type: application

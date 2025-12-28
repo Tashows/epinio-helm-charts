@@ -26,8 +26,8 @@ epinio.io/created-by: {{ .Values.epinio.username | quote }}
 Selector labels
 */}}
 {{- define "epinio-application.selectorLabels" -}}
-app.kubernetes.io/name: {{ .Values.epinio.appName | quote }}
-app.kubernetes.io/component: application
+app.kubernetes.io/name: {{ default .Values.epinio.appName (default (dict "appName" "") .Values.userConfig).appName | quote }}
+app.kubernetes.io/component: {{ printf "%s-process" (default "web" (default (dict "processName" "") .Values.userConfig).processName) | quote }}
 {{- end }}
 
 {{/*
@@ -41,17 +41,17 @@ given string
 {{/*
 Resource name sanitization and truncation.
 - Always suffix the sha1sum (40 characters long)
-- Always add an "r" prefix to make sure we don't have leading digits
+- Always add an "r" prefix to make sure we don't have leading digits # removed
 - The rest of the characters up to 63 are the original string with invalid
 character removed.
 */}}
 {{- define "epinio-truncate" -}}
-{{ print "r" (trunc 21 (include "epinio-name-sanitize" .)) "-" (sha1sum .) }}
+{{ print (trunc 21 (include "epinio-name-sanitize" .)) "-" (sha1sum .) }}
 {{- end }}
 
 {{/*
 Application listening port
 */}}
 {{- define "epinio-app-listening-port" -}}
-{{ default 8080 (default (dict "appListeningPort" "8080") .Values.userConfig).appListeningPort }}
+{{ default "" (default (dict "appListeningPort" "") .Values.userConfig).appListeningPort }}
 {{- end }}

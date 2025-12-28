@@ -39,9 +39,11 @@ spec:
       {{- end }}
       containers:
       - name: {{ include "epinio-truncate" .Values.epinio.appName }}
+        {{- if include "epinio-app-listening-port" . }}
         ports:
         - containerPort: {{ include "epinio-app-listening-port" . }}
           protocol: TCP
+        {{- end }}
         {{- with .Values.epinio.configpaths }}
         volumeMounts:
         {{- range . }}
@@ -51,18 +53,26 @@ spec:
         {{- end }}
         {{- end }}
         env:
+        {{- if include "epinio-app-listening-port" . }}
         - name: PORT
           value: {{ include "epinio-app-listening-port" . | quote }}
+        {{- end }}
         {{- range .Values.epinio.env }}
         - name: {{ .name | quote }}
           value: {{ .value | quote }}
         {{- end}}
         image: {{ .Values.epinio.imageURL }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- with .Values.resources }}
+        {{- with .Values.userConfig.resources }}
         resources:
           {{- toYaml . | nindent 10 }}
-        {{- end}}
+        {{- end }}
+        {{- with .Values.userConfig.commandArgs }}
+        args:
+          {{- range splitList " " . }}
+            - {{ . | quote }}
+          {{- end }}
+        {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
