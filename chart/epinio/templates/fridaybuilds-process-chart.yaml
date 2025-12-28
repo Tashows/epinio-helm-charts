@@ -1,0 +1,28 @@
+apiVersion: application.epinio.io/v1
+kind: AppChart
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: fridaybuilds-app
+  labels:
+    app.kubernetes.io/component: epinio
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/name: fridaybuilds-process
+    app.kubernetes.io/part-of: epinio
+    app.kubernetes.io/version: {{ default .Chart.AppVersion .Values.image.epinio.tag }}
+spec:
+  shortDescription: Deployment with configurable resources and commandArgs
+  description: FridayBuilds process deployment with configurable resources, commandArgs and updated label structure.
+  helmChart: {{ .Values.appChart.fridaybuilds_process | quote }}
+  settings:
+    appListeningPort:
+      type: "integer"
+    "resources.limits":
+      type: "map"
+    "resources.requests":
+      type: "map"
+    commandArgs:
+      type: "string"
+    appName:
+      type: "string"
+    processName:
+      type: "string"
