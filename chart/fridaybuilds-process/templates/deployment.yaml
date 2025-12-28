@@ -11,7 +11,8 @@ spec:
   replicas: {{ .Values.epinio.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Values.epinio.appName | quote }}
+      app.kubernetes.io/name: {{ include "label-name" . }}
+      app.kubernetes.io/component: {{ include "label-component" . }}
   template:
     metadata:
       annotations:
