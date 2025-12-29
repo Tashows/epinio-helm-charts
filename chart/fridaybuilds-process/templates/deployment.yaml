@@ -29,8 +29,8 @@ spec:
       serviceAccount: {{ .Release.Namespace }}
       serviceAccountName: {{ .Release.Namespace }}
       automountServiceAccountToken: true
-      {{- with .Values.epinio.configurations }}
       volumes:
+      {{- with .Values.epinio.configurations }}
       {{- range . }}
       - name: {{ . }}
         secret:
@@ -38,6 +38,8 @@ spec:
           secretName: {{ . }}
       {{- end }}
       {{- end }}
+      - name: tmp
+        emptyDir: {}
       containers:
       - name: {{ include "epinio-truncate" .Values.epinio.appName }}
         {{- if include "epinio-app-listening-port" . }}
@@ -45,14 +47,16 @@ spec:
         - containerPort: {{ include "epinio-app-listening-port" . }}
           protocol: TCP
         {{- end }}
-        {{- with .Values.epinio.configpaths }}
         volumeMounts:
+        {{- with .Values.epinio.configpaths }}
         {{- range . }}
         - mountPath: /configurations/{{ .path }}
           name: {{ .name }}
           readOnly: true
         {{- end }}
         {{- end }}
+        - name: tmp
+          mountPath: /workspace/source/app/tmp
         env:
         {{- if include "epinio-app-listening-port" . }}
         - name: PORT
@@ -66,6 +70,8 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- include "epinio-application.resources" . | nindent 8 }}
         {{- with .Values.userConfig.commandArgs }}
+        command:
+          - /cnb/lifecycle/launcher
         args:
           {{- range splitList " " . }}
             - {{ . | quote }}
