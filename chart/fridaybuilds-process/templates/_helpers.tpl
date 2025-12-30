@@ -73,7 +73,7 @@ App name for label
 {{/*
 Define resources for pods
 */}}
-{{- define "epinio-application.resources" -}}
+{{- define "epinio-application-resources" -}}
 resources:
 	{{- if or .Values.userConfig.resourcesLimitsCpu .Values.userConfig.resourcesLimitsMemory }}
 	limits:
