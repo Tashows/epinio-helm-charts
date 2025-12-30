@@ -68,7 +68,6 @@ spec:
         {{- end}}
         image: {{ .Values.epinio.imageURL }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- include "epinio-application-resources" . | nindent 8 }}
         {{- with .Values.userConfig.commandArgs }}
         command:
           - /cnb/lifecycle/launcher
