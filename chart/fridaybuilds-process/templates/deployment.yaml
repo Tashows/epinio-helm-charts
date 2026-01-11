@@ -40,6 +40,19 @@ spec:
       {{- end }}
       - name: tmp
         emptyDir: {}
+      initContainers:
+      - name: clean-tmp
+        image: busybox:latest
+        # fixes rails tmp/pids leftovers from previous runs when container crashes but pod remains
+        command:
+          - sh
+          - -c
+          - |
+            rm -rf /workspace/source/app/tmp/pids/*
+            rm -rf /workspace/source/app/tmp/sockets/*
+        volumeMounts:
+        - name: tmp
+          mountPath: /workspace/source/app/tmp
       containers:
       - name: {{ include "epinio-truncate" .Values.epinio.appName }}
         {{- if include "epinio-app-listening-port" . }}
