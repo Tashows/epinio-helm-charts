@@ -27,9 +27,10 @@ Selector labels
 */}}
 {{- define "epinio-application.selectorLabels" -}}
 app.kubernetes.io/name: {{ .Values.epinio.appName | quote }}
-fridaybuilds.com/name: {{ include "fridaybuilds-name" . }}
+app.kubernetes.io/component: application
+fridaybuilds.com/app-name: {{ include "fridaybuilds-app-name" . }}
 fridaybuilds.com/class: {{ include "fridaybuilds-class" . }}
-app.kubernetes.io/component: {{ include "label-component" . }}
+fridaybuilds.com/name: {{ include "fridaybuilds-name" . }}
 {{- end }}
 
 {{/*
@@ -59,10 +60,10 @@ Application listening port
 {{- end }}
 
 {{/*
-App/Pod component name
+fridaybuilds app name/slug, when applicable
 */}}
-{{- define "label-component" -}}
-{{ printf "%s" (default "web" (default (dict "componentName" "") .Values.userConfig).componentName) | quote }}
+{{- define "fridaybuilds-app-name" -}}
+{{ default "" (default (dict "fridaybuildsAppName" "") .Values.userConfig).fridaybuildsAppName }}
 {{- end }}
 
 {{/*

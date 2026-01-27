@@ -26,9 +26,9 @@ spec:
       type: "string"
     commandArgs:
       type: "string"
-    fridaybuildsName:
+    fridaybuildsAppName:
       type: "string"
     fridaybuildsClass:
       type: "string"
-    componentName:
+    fridaybuildsName:
       type: "string"
