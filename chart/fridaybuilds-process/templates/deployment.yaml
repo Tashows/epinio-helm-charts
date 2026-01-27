@@ -11,8 +11,7 @@ spec:
   replicas: {{ .Values.epinio.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "label-name" . }}
-      app.kubernetes.io/component: {{ include "label-component" . }}
+      {{- include "epinio-application.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:

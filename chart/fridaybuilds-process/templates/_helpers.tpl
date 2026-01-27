@@ -26,7 +26,9 @@ epinio.io/created-by: {{ .Values.epinio.username | quote }}
 Selector labels
 */}}
 {{- define "epinio-application.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "label-name" . }}
+app.kubernetes.io/name: {{ .Values.epinio.appName | quote }}
+fridaybuilds.com/name: {{ include "fridaybuilds-name" . }}
+fridaybuilds.com/class: {{ include "fridaybuilds-class" . }}
 app.kubernetes.io/component: {{ include "label-component" . }}
 {{- end }}
 
@@ -60,14 +62,21 @@ Application listening port
 App/Pod component name
 */}}
 {{- define "label-component" -}}
-{{ printf "%s-process" (default "web" (default (dict "processName" "") .Values.userConfig).processName) | quote }}
+{{ printf "%s" (default "web" (default (dict "componentName" "") .Values.userConfig).componentName) | quote }}
 {{- end }}
 
 {{/*
-App name for label
+Fridaybuilds class
 */}}
-{{- define "label-name" -}}
-{{ default .Values.epinio.appName (default (dict "appName" "") .Values.userConfig).appName | quote }}
+{{- define "fridaybuilds-class" -}}
+{{ printf "%s" (default "AppProcess" (default (dict "fridaybuildsClass" "") .Values.userConfig).fridaybuildsClass) | replace " " "-" | trunc 50 }}
+{{- end }}
+
+{{/*
+FridayBuilds name/slug
+*/}}
+{{- define "fridaybuilds-name" -}}
+{{ default .Values.epinio.appName (default (dict "fridaybuildsName" "") .Values.userConfig).fridaybuildsName | lower | replace " " "-" | trunc 50 }}
 {{- end }}
 
 {{/*
