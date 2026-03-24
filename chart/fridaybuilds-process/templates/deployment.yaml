@@ -25,8 +25,8 @@ spec:
         epinio.io/stage-id: {{ .Values.epinio.stageID | quote }}
         epinio.io/app-container: {{ include "epinio-truncate" .Values.epinio.appName }}
     spec:
-      serviceAccount: {{ .Release.Namespace }}
-      serviceAccountName: {{ .Release.Namespace }}
+      serviceAccount: {{ .Values.userConfig.serviceAccountName | default .Release.Namespace }} # deprecated, kept for backward compatibility, will be removed in future Kubernetes versions
+      serviceAccountName: {{ .Values.userConfig.serviceAccountName | default .Release.Namespace }}
       automountServiceAccountToken: true
       volumes:
       {{- with .Values.epinio.configurations }}
