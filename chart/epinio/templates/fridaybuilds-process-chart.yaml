@@ -40,3 +40,5 @@ spec:
       type: "string"
     volumeMountPath:
       type: "string"
+    volumeCreate:
+      type: "boolean"
