@@ -1,4 +1,4 @@
-{{- if include "fridaybuilds-volume-name" . | trim }}
+{{- if and (include "fridaybuilds-volume-name" . | trim) (eq (include "fridaybuilds-volume-create" . | trim) "true") }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

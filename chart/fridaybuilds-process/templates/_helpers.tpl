@@ -132,3 +132,7 @@ Persistent volume settings
 {{- define "fridaybuilds-volume-mount-path" -}}
 {{ default "/data" (default (dict "volumeMountPath" "") .Values.userConfig).volumeMountPath }}
 {{- end }}
+
+{{- define "fridaybuilds-volume-create" -}}
+{{ default "false" (default (dict "volumeCreate" "") .Values.userConfig).volumeCreate }}
+{{- end }}
