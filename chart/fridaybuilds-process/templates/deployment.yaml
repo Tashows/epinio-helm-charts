@@ -39,6 +39,11 @@ spec:
       {{- end }}
       - name: tmp
         emptyDir: {}
+      {{- if include "fridaybuilds-volume-name" . | trim }}
+      - name: {{ include "fridaybuilds-volume-name" . | trim }}
+        persistentVolumeClaim:
+          claimName: {{ include "epinio-truncate" (include "fridaybuilds-volume-name" . | trim) }}
+      {{- end }}
       initContainers:
       - name: clean-tmp
         image: busybox:latest
@@ -69,6 +74,10 @@ spec:
         {{- end }}
         - name: tmp
           mountPath: /workspace/source/app/tmp
+        {{- if include "fridaybuilds-volume-name" . | trim }}
+        - name: {{ include "fridaybuilds-volume-name" . | trim }}
+          mountPath: {{ include "fridaybuilds-volume-mount-path" . | trim }}
+        {{- end }}
         env:
         {{- if include "epinio-app-listening-port" . }}
         - name: PORT

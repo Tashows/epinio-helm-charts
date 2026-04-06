@@ -1,0 +1,23 @@
+{{- if include "fridaybuilds-volume-name" . | trim }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "epinio-truncate" (include "fridaybuilds-volume-name" . | trim) }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: epinio
+    app.kubernetes.io/part-of: {{ .Release.Namespace | quote }}
+    fridaybuilds.com/volume-name: {{ include "fridaybuilds-volume-name" . | trim | quote }}
+  annotations:
+    helm.sh/resource-policy: keep
+    {{- include "epinio-application.annotations" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ include "fridaybuilds-volume-size" . | trim | quote }}
+  {{- if include "fridaybuilds-volume-storage-class" . | trim }}
+  storageClassName: {{ include "fridaybuilds-volume-storage-class" . | trim | quote }}
+  {{- end }}
+{{- end }}

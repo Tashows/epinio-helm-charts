@@ -113,3 +113,22 @@ resources:
   {{- end }}
 {{- end }}
 {{- end }}
+
+{{/*
+Persistent volume settings
+*/}}
+{{- define "fridaybuilds-volume-name" -}}
+{{ default "" (default (dict "volumeName" "") .Values.userConfig).volumeName }}
+{{- end }}
+
+{{- define "fridaybuilds-volume-size" -}}
+{{ default "1Gi" (default (dict "volumeSize" "") .Values.userConfig).volumeSize }}
+{{- end }}
+
+{{- define "fridaybuilds-volume-storage-class" -}}
+{{ default "ceph-filesystem" (default (dict "volumeStorageClass" "") .Values.userConfig).volumeStorageClass }}
+{{- end }}
+
+{{- define "fridaybuilds-volume-mount-path" -}}
+{{ default "/data" (default (dict "volumeMountPath" "") .Values.userConfig).volumeMountPath }}
+{{- end }}

@@ -32,3 +32,11 @@ spec:
       type: "string"
     fridaybuildsName:
       type: "string"
+    volumeName:
+      type: "string"
+    volumeSize:
+      type: "string"
+    volumeStorageClass:
+      type: "string"
+    volumeMountPath:
+      type: "string"
