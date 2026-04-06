@@ -28,6 +28,9 @@ spec:
       serviceAccount: {{ .Values.userConfig.serviceAccountName | default .Release.Namespace }} # deprecated, kept for backward compatibility, will be removed in future Kubernetes versions
       serviceAccountName: {{ .Values.userConfig.serviceAccountName | default .Release.Namespace }}
       automountServiceAccountToken: true
+      securityContext:
+        fsGroup: 1001
+        fsGroupChangePolicy: OnRootMismatch
       volumes:
       {{- with .Values.epinio.configurations }}
       {{- range . }}
