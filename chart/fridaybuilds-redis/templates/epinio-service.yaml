@@ -1,0 +1,47 @@
+apiVersion: application.epinio.io/v1
+kind: Service
+metadata:
+  name: redis
+  namespace: epinio
+spec:
+  appVersion: 8.4.0
+  chart: redis
+  chartVersion: 12.1.6
+  description: |
+    This service is going to deploy a redis instance, using Bitnami chart and the official docker image.
+    You can find more info at https://github.com/bitnami/charts/tree/master/bitnami/redis/ and
+    https://hub.docker.com/_/redis
+  helmRepo:
+    name: bitnami
+    url: "https://charts.bitnami.com/bitnami"
+  name: redis
+  serviceIcon: https://bitnami.com/assets/stacks/postgresql/img/postgresql-stack-220x234.png
+  settings:
+    "commonLabels":
+      type: map
+    "image.tag":
+      type: string
+      # default: 18.1
+    "master.persistence.size":
+      type: string
+      # default: 128Mi
+    "master.resources.requests.cpu":
+      type: string
+    "master.resources.requests.memory":
+      type: string
+    "master.resources.limits.cpu":
+      type: string
+    "master.resources.limits.memory":
+      type: string
+  shortDescription: A Redis service that can be used in production
+  values: |-
+    image:
+      registry: docker.io
+      repository: redis
+    architecture: standalone
+    global:
+      defaultStorageClass: "rook-ceph-block"
+    master:
+      terminationGracePeriodSeconds: 60
+      priorityClassName: "db-critical"
+    {{- template "epinio.catalog-service-values" . }}

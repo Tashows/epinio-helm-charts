@@ -1,0 +1,15 @@
+apiVersion: v2
+name: fridaybuilds-postgres
+description: The helm chart for fridaybuilds processes to be deployed by
+home: https://github.com/Tashows/epinio-helm-charts
+type: application
+version: 0.1.0
+keywords:
+- postgres
+maintainers:
+- email: info@tashows.com
+  name: Tashows
+sources:
+- https://github.com/Tashows/epinio-helm-charts
+annotations:
+  artifacthub.io/license: Apache-2.0

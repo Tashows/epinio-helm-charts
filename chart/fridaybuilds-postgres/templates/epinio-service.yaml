@@ -1,0 +1,56 @@
+apiVersion: application.epinio.io/v1
+kind: Service
+metadata:
+  name: postgresql
+  namespace: {{ .Release.Namespace }}
+spec:
+  name: postgresql
+  shortDescription: A PostgreSQL service that can be used in production
+  description: |
+    This service is going to deploy a PostreSQL db instance, using Bitnami chart and the official docker image.
+    You can find more info at https://github.com/bitnami/charts/tree/master/bitnami/postgresql/ and
+    https://hub.docker.com/_/postgres
+  chart: postgresql
+  chartVersion: 12.1.6
+  serviceIcon: https://bitnami.com/assets/stacks/postgresql/img/postgresql-stack-220x234.png
+  appVersion: 18.1.0
+  helmRepo:
+    name: bitnami
+    url: "https://charts.bitnami.com/bitnami"
+  settings:
+    "commonLabels":
+      type: map
+    "global.postgresql.auth.database":
+      type: string
+    "image.tag":
+      type: string
+      # default: 18.1
+    "primary.persistence.size":
+      type: string
+      # default: 128Mi
+    "primary.resources.requests.cpu":
+      type: string
+    "primary.resources.requests.memory":
+      type: string
+    "primary.resources.limits.cpu":
+      type: string
+    "primary.resources.limits.memory":
+      type: string
+    # todo: enable backups
+    # "backup.enabled":
+    #   type: boolean
+    # "backup.cronjob.schedule":
+    #   type: string
+    #   # default: "0 0 * * *" OR "@daily"
+  values: |-
+    image:
+      registry: docker.io
+      repository: postgres
+    global:
+      defaultStorageClass: "rook-ceph-block"
+      imagePullSecrets:
+        - registry-creds
+    primary:
+      terminationGracePeriodSeconds: 60
+      priorityClassName: "db-critical"
+    {{- template "epinio.catalog-service-values" . }}

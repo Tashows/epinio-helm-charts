@@ -1,0 +1,15 @@
+apiVersion: v2
+name: fridaybuilds-redis
+description: The helm chart for fridaybuilds postgres
+home: https://github.com/Tashows/epinio-helm-charts
+type: application
+version: 0.1.0
+keywords:
+- redis
+maintainers:
+- email: info@tashows.com
+  name: Tashows
+sources:
+- https://github.com/Tashows/epinio-helm-charts
+annotations:
+  artifacthub.io/license: Apache-2.0
