@@ -60,6 +60,19 @@ spec:
         volumeMounts:
         - name: tmp
           mountPath: /workspace/source/app/tmp
+      {{- if and (include "fridaybuilds-volume-name" . | trim) (eq (include "fridaybuilds-volume-create" . | trim) "true") }}
+      - name: fix-volume-permissions
+        image: busybox:latest
+        command:
+          - sh
+          - -c
+          - |
+            chown 1000:1001 /volume-data
+            chmod 775 /volume-data
+        volumeMounts:
+          - name: {{ include "fridaybuilds-volume-name" . | trim }}
+            mountPath: /volume-data
+      {{- end }}
       containers:
       - name: {{ include "epinio-truncate" .Values.epinio.appName }}
         {{- if include "epinio-app-listening-port" . }}
