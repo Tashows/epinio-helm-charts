@@ -50,8 +50,7 @@ image:
     groupid: 1000
 appChart:
   default: https://github.com/epinio/helm-charts/releases/download/epinio-application-0.1.26/epinio-application-0.1.26.tgz
-  configurable_sa: https://github.com/Tashows/epinio-helm-charts/releases/download/v0.1.26/epinio-application-w-serviceaccountname-0.1.26.tgz
-  fridaybuilds_process: https://github.com/Tashows/epinio-helm-charts/releases/download/v0.1.27/fridaybuilds-process-0.1.31.tgz
+  fridaybuilds_process: https://github.com/Tashows/epinio-helm-charts/releases/download/v0.1.27/fridaybuilds-process-0.1.37.tgz
 server:
   # increase this value to increase all timeouts by the same factor
   timeoutMultiplier: 1
@@ -448,3 +447,33 @@ rancher:
   # The uri comes from global.cattle.url (provided by rancher), or if that's missing this value (rancher.url)
   # This supersedes server.accessControlAllowOrigin
   url: ""
+postgres:
+  global:
+    postgresql:
+      auth:
+        database: main_database
+  image:
+    tag: "18.1"
+  primary:
+    persistence:
+      size: 128Mi
+    resources:
+      requests:
+        cpu: "20m"
+        memory: "128Mi"
+      limits:
+        cpu: "100m"
+        memory: "128Mi"
+redis:
+  image:
+    tag: "8"
+  master:
+    persistence:
+      size: 128Mi
+    resources:
+      requests:
+        cpu: "20m"
+        memory: "128Mi"
+      limits:
+        cpu: "100m"
+        memory: "128Mi"
