@@ -30,8 +30,9 @@ spec:
       automountServiceAccountToken: true
       runtimeClassName: "gvisor"
       securityContext:
-        fsGroup: 1001
+        fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
+        runAsUser: 1001
       volumes:
       {{- with .Values.epinio.configurations }}
       {{- range . }}
@@ -68,8 +69,10 @@ spec:
           - sh
           - -c
           - |
-            chown 1000:1001 /volume-data
+            chown 1001:1000 /volume-data
             chmod 775 /volume-data
+        securityContext:
+          runAsUser: 0
         volumeMounts:
           - name: {{ include "fridaybuilds-volume-name" . | trim }}
             mountPath: /volume-data
