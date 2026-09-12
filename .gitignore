@@ -1,1 +1,5 @@
 .idea/
+fridaybuilds-postgres-*.tgz
+fridaybuilds-process-*.tgz
+fridaybuilds-redis-*.tgz
+epinio-application-w-serviceaccountname-*.tgz
