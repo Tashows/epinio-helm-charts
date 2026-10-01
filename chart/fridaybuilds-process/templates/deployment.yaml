@@ -62,7 +62,7 @@ spec:
         volumeMounts:
         - name: tmp
           mountPath: /workspace/source/app/tmp
-      {{- if and (include "fridaybuilds-volume-name" . | trim) }}
+      {{- if include "fridaybuilds-volume-name" . | trim }}
       - name: fix-volume-permissions
         image: busybox:latest
         command:
