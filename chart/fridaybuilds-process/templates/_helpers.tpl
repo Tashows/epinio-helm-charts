@@ -121,6 +121,34 @@ Persistent volume settings
 {{ default "" (default (dict "volumeName" "") .Values.userConfig).volumeName }}
 {{- end }}
 
+{{- define "fridaybuilds-volume-claim-name-setting" -}}
+{{ default "" (default (dict "volumeClaimName" "") .Values.userConfig).volumeClaimName }}
+{{- end }}
+
+{{/*
+PVC to mount. volumeClaimName is used as is. Without it, the claim name is derived from volumeName (kept for
+releases deployed before volumeClaimName existed).
+*/}}
+{{- define "fridaybuilds-volume-claim-name" -}}
+{{- if include "fridaybuilds-volume-claim-name-setting" . | trim -}}
+{{ include "fridaybuilds-volume-claim-name-setting" . | trim }}
+{{- else if include "fridaybuilds-volume-name" . | trim -}}
+{{ include "epinio-truncate" (include "fridaybuilds-volume-name" . | trim) }}
+{{- end -}}
+{{- end }}
+
+{{/*
+Name of the volume in the pod spec. Fixed when volumeClaimName is given, so it doesn't depend on user chosen names
+(pod volume names are limited to 63 characters).
+*/}}
+{{- define "fridaybuilds-pod-volume-name" -}}
+{{- if include "fridaybuilds-volume-claim-name-setting" . | trim -}}
+fridaybuilds-volume
+{{- else -}}
+{{ include "fridaybuilds-volume-name" . | trim }}
+{{- end -}}
+{{- end }}
+
 {{- define "fridaybuilds-volume-size" -}}
 {{ default "1Gi" (default (dict "volumeSize" "") .Values.userConfig).volumeSize }}
 {{- end }}

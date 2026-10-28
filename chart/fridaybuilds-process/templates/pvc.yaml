@@ -1,8 +1,8 @@
-{{- if and (include "fridaybuilds-volume-name" . | trim) (eq (include "fridaybuilds-volume-create" . | trim) "true") }}
+{{- if and (include "fridaybuilds-volume-claim-name" . | trim) (eq (include "fridaybuilds-volume-create" . | trim) "true") }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "epinio-truncate" (include "fridaybuilds-volume-name" . | trim) }}
+  name: {{ include "fridaybuilds-volume-claim-name" . | trim }}
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/managed-by: epinio

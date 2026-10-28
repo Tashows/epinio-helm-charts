@@ -44,10 +44,10 @@ spec:
       {{- end }}
       - name: tmp
         emptyDir: {}
-      {{- if include "fridaybuilds-volume-name" . | trim }}
-      - name: {{ include "fridaybuilds-volume-name" . | trim }}
+      {{- if include "fridaybuilds-volume-claim-name" . | trim }}
+      - name: {{ include "fridaybuilds-pod-volume-name" . | trim }}
         persistentVolumeClaim:
-          claimName: {{ include "epinio-truncate" (include "fridaybuilds-volume-name" . | trim) }}
+          claimName: {{ include "fridaybuilds-volume-claim-name" . | trim }}
       {{- end }}
       initContainers:
       - name: clean-tmp
@@ -62,7 +62,7 @@ spec:
         volumeMounts:
         - name: tmp
           mountPath: /workspace/source/app/tmp
-      {{- if include "fridaybuilds-volume-name" . | trim }}
+      {{- if include "fridaybuilds-volume-claim-name" . | trim }}
       - name: fix-volume-permissions
         image: busybox:latest
         command:
@@ -74,7 +74,7 @@ spec:
         securityContext:
           runAsUser: 0
         volumeMounts:
-          - name: {{ include "fridaybuilds-volume-name" . | trim }}
+          - name: {{ include "fridaybuilds-pod-volume-name" . | trim }}
             mountPath: /volume-data
       {{- end }}
       containers:
@@ -94,8 +94,8 @@ spec:
         {{- end }}
         - name: tmp
           mountPath: /workspace/source/app/tmp
-        {{- if include "fridaybuilds-volume-name" . | trim }}
-        - name: {{ include "fridaybuilds-volume-name" . | trim }}
+        {{- if include "fridaybuilds-volume-claim-name" . | trim }}
+        - name: {{ include "fridaybuilds-pod-volume-name" . | trim }}
           mountPath: {{ include "fridaybuilds-volume-mount-path" . | trim }}
         {{- end }}
         env:
