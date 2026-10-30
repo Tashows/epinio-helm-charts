@@ -27,7 +27,8 @@ spec:
     spec:
       serviceAccount: {{ .Values.userConfig.serviceAccountName | default .Release.Namespace }} # deprecated, kept for backward compatibility, will be removed in future Kubernetes versions
       serviceAccountName: {{ .Values.userConfig.serviceAccountName | default .Release.Namespace }}
-      automountServiceAccountToken: true
+      {{- /* Mounted unless userConfig.automountServiceAccountToken is false, for processes that don't use the Kubernetes API */}}
+      automountServiceAccountToken: {{ ne (toString (dig "automountServiceAccountToken" true .Values.userConfig)) "false" }}
       runtimeClassName: "gvisor"
       securityContext:
         fsGroup: 1000
