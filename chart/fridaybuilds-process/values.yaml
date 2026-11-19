@@ -37,6 +37,11 @@
 image:
   pullPolicy: IfNotPresent
 
+# Image of the init containers that prepare the pod (tmp cleanup, volume permissions). Pinned, so pods start without
+# checking the registry for a newer `latest` every time.
+initContainers:
+  image: busybox:1.37.0
+
 imagePullSecrets: []
 
 epinio:

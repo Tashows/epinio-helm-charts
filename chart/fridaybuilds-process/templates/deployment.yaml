@@ -52,7 +52,8 @@ spec:
       {{- end }}
       initContainers:
       - name: clean-tmp
-        image: busybox:latest
+        image: {{ .Values.initContainers.image }}
+        imagePullPolicy: IfNotPresent
         # fixes rails tmp/pids leftovers from previous runs when container crashes but pod remains
         command:
           - sh
@@ -65,7 +66,8 @@ spec:
           mountPath: /workspace/source/app/tmp
       {{- if include "fridaybuilds-volume-claim-name" . | trim }}
       - name: fix-volume-permissions
-        image: busybox:latest
+        image: {{ .Values.initContainers.image }}
+        imagePullPolicy: IfNotPresent
         command:
           - sh
           - -c
@@ -110,6 +112,16 @@ spec:
         {{- end}}
         image: {{ .Values.epinio.imageURL }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if include "epinio-app-listening-port" . }}
+        {{- /* Ready once the app accepts connections, so no traffic reaches a pod that is still booting. Probed every
+        second to notice that quickly. There's no liveness probe, so a slow boot only keeps the pod unready. */}}
+        readinessProbe:
+          tcpSocket:
+            port: {{ include "epinio-app-listening-port" . }}
+          periodSeconds: 1
+          timeoutSeconds: 1
+          failureThreshold: 3
+        {{- end }}
         {{- include "epinio-application-resources" . | nindent 8 }}
         {{- with .Values.userConfig.commandArgs }}
         command:
