@@ -1,0 +1,51 @@
+{{- /* Scaling to zero with KEDA's HTTP add-on, see fridaybuilds-sleep-mode in _helpers.tpl */}}
+{{- $mode := include "fridaybuilds-sleep-mode" . }}
+{{- if eq $mode "route" }}
+---
+# The Ingress sends the requests here, and the interceptor forwards them to the app's pods
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "fridaybuilds-interceptor-service-name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "epinio-application.labels" . | nindent 4 }}
+  annotations:
+    {{- include "epinio-application.annotations" . | nindent 4 }}
+spec:
+  type: ExternalName
+  externalName: {{ .Values.keda.interceptorService }}
+  ports:
+    - port: {{ .Values.keda.interceptorPort }}
+      protocol: TCP
+---
+# Matches the app's requests in the interceptor, counts them for scaling and holds them while the app wakes up
+apiVersion: http.keda.sh/v1beta1
+kind: InterceptorRoute
+metadata:
+  name: {{ include "fridaybuilds-sleep-route-name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "epinio-application.labels" . | nindent 4 }}
+  annotations:
+    {{- include "epinio-application.annotations" . | nindent 4 }}
+spec:
+  target:
+    service: {{ include "epinio-truncate" .Values.epinio.appName }}
+    port: 8080
+  rules:
+    {{- range .Values.epinio.routes }}
+    - hosts:
+        - {{ .domain | quote }}
+      {{- if and .path (ne .path "/") }}
+      paths:
+        - value: {{ .path | quote }}
+      {{- end }}
+    {{- end }}
+  # Required, but unused: the workload scales between 0 and replicaCount only
+  scalingMetric:
+    concurrency:
+      targetValue: 100
+  timeouts:
+    readiness: {{ .Values.keda.wakeTimeout | quote }}
+{{- end }}

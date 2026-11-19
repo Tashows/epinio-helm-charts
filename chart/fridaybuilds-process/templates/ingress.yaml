@@ -40,9 +40,16 @@ spec:
         paths:
           - backend:
               service:
+                {{- if eq (include "fridaybuilds-sleep-mode" $) "route" }}
+                # Through the KEDA interceptor, see scale-to-zero.yaml
+                name: {{ include "fridaybuilds-interceptor-service-name" $ }}
+                port:
+                  number: {{ $.Values.keda.interceptorPort }}
+                {{- else }}
                 name: {{ include "epinio-truncate" $.Values.epinio.appName }}
                 port:
                   number: 8080
+                {{- end }}
             path: {{ .path | quote }}
             pathType: ImplementationSpecific
   tls:
