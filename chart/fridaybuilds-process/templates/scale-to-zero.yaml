@@ -49,3 +49,29 @@ spec:
   timeouts:
     readiness: {{ .Values.keda.wakeTimeout | quote }}
 {{- end }}
+{{- if $mode }}
+---
+# KEDA owns the Deployment's replicas: 0 once no request arrived for sleepAfterSeconds, replicaCount as soon as one does.
+# Rendered after the InterceptorRoute (helm installs unknown kinds alphabetically), which KEDA's scaler has to know.
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ include "epinio-truncate" .Values.epinio.appName }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "epinio-application.labels" . | nindent 4 }}
+  annotations:
+    {{- include "epinio-application.annotations" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    name: {{ include "epinio-truncate" .Values.epinio.appName }}
+  idleReplicaCount: 0
+  minReplicaCount: {{ .Values.epinio.replicaCount }}
+  maxReplicaCount: {{ .Values.epinio.replicaCount }}
+  cooldownPeriod: {{ include "fridaybuilds-sleep-after-seconds" . }}
+  triggers:
+    - type: external-push
+      metadata:
+        scalerAddress: {{ .Values.keda.externalScalerAddress | quote }}
+        interceptorRoute: {{ include "fridaybuilds-sleep-route-name" . | quote }}
+{{- end }}
