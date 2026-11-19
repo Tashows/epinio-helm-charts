@@ -8,7 +8,11 @@ metadata:
   annotations:
     {{- include "epinio-application.annotations" . | nindent 4 }}
 spec:
+  {{- /* While the workload can sleep, its ScaledObject (scale-to-zero.yaml) owns the replicas. Rendering them here would
+  make every helm upgrade wake a sleeping workload or put an awake one to sleep. */}}
+  {{- if not (include "fridaybuilds-sleep-mode" .) }}
   replicas: {{ .Values.epinio.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "epinio-application.selectorLabels" . | nindent 6 }}
