@@ -77,3 +77,13 @@ tolerations: []
 affinity: {}
 
 userConfig: {}
+
+# KEDA HTTP add-on, for workloads that scale to zero when idle (userConfig.sleepAfterSeconds, userConfig.sleepWithApp)
+keda:
+  # The add-on's interceptor proxy Service, which sleeping workloads' traffic goes through
+  interceptorService: keda-add-ons-http-interceptor-proxy.keda.svc.cluster.local
+  interceptorPort: 8080
+  # The add-on's external scaler, which feeds the interceptor's request counts to KEDA
+  externalScalerAddress: keda-add-ons-http-external-scaler.keda:9090
+  # How long the interceptor holds a request while a sleeping workload wakes up (then 504)
+  wakeTimeout: 60s

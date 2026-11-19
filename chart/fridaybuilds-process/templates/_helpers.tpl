@@ -164,3 +164,49 @@ fridaybuilds-volume
 {{- define "fridaybuilds-volume-create" -}}
 {{ default "false" (default (dict "volumeCreate" "") .Values.userConfig).volumeCreate }}
 {{- end }}
+
+{{/*
+Scale to zero with KEDA's HTTP add-on (keda.* values). userConfig.sleepAfterSeconds > 0 lets the workload sleep: KEDA
+scales it to 0 pods once no request arrived for that long, and back to replicaCount on the next request, which the
+KEDA interceptor holds meanwhile. fridaybuilds-sleep-mode is
+- "route": the release has a listening port and routes, and sends its own traffic through the interceptor
+- "follow": userConfig.sleepWithApp names another app in the namespace, whose traffic wakes this one and keeps it awake
+- "" otherwise, and always while replicaCount is 0 (stopped)
+*/}}
+{{- define "fridaybuilds-sleep-after-seconds" -}}
+{{ int (default 0 (default dict .Values.userConfig).sleepAfterSeconds) }}
+{{- end }}
+
+{{- define "fridaybuilds-sleep-with-app" -}}
+{{ default "" (default dict .Values.userConfig).sleepWithApp }}
+{{- end }}
+
+{{- define "fridaybuilds-sleep-mode" -}}
+{{- if and (gt (int (include "fridaybuilds-sleep-after-seconds" .)) 0) (gt (int .Values.epinio.replicaCount) 0) -}}
+{{- if and (include "epinio-app-listening-port" .) .Values.epinio.routes -}}
+route
+{{- else if include "fridaybuilds-sleep-with-app" . | trim -}}
+follow
+{{- end -}}
+{{- end -}}
+{{- end }}
+
+{{/*
+InterceptorRoute whose traffic wakes the workload: its own, or the one of the app it follows. Named like the app's
+Deployment and Service.
+*/}}
+{{- define "fridaybuilds-sleep-route-name" -}}
+{{- if eq (include "fridaybuilds-sleep-mode" .) "follow" -}}
+{{ include "epinio-truncate" (include "fridaybuilds-sleep-with-app" . | trim) }}
+{{- else -}}
+{{ include "epinio-truncate" .Values.epinio.appName }}
+{{- end -}}
+{{- end }}
+
+{{/*
+ExternalName Service aliasing the KEDA interceptor in the release's namespace (an Ingress can only reference Services
+of its own namespace)
+*/}}
+{{- define "fridaybuilds-interceptor-service-name" -}}
+{{ include "epinio-truncate" (print .Values.epinio.appName "-interceptor") }}
+{{- end }}
