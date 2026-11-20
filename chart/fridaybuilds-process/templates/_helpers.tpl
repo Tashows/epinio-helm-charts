@@ -210,3 +210,28 @@ of its own namespace)
 {{- define "fridaybuilds-interceptor-service-name" -}}
 {{ include "epinio-truncate" (print .Values.epinio.appName "-interceptor") }}
 {{- end }}
+
+{{/*
+Values added after 0.1.44. Epinio upgrades releases with helm's --reuse-values, which keeps the chart defaults of the
+version a release was installed with, so values.yaml defaults added later are missing on upgrades. These helpers hold
+the defaults instead.
+*/}}
+{{- define "fridaybuilds-init-container-image" -}}
+{{ (default dict .Values.initContainers).image | default "busybox:1.37.0" }}
+{{- end }}
+
+{{- define "fridaybuilds-keda-interceptor-service" -}}
+{{ (default dict .Values.keda).interceptorService | default "keda-add-ons-http-interceptor-proxy.keda.svc.cluster.local" }}
+{{- end }}
+
+{{- define "fridaybuilds-keda-interceptor-port" -}}
+{{ (default dict .Values.keda).interceptorPort | default 8080 }}
+{{- end }}
+
+{{- define "fridaybuilds-keda-external-scaler-address" -}}
+{{ (default dict .Values.keda).externalScalerAddress | default "keda-add-ons-http-external-scaler.keda:9090" }}
+{{- end }}
+
+{{- define "fridaybuilds-keda-wake-timeout" -}}
+{{ (default dict .Values.keda).wakeTimeout | default "60s" }}
+{{- end }}

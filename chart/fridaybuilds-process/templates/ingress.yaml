@@ -44,7 +44,7 @@ spec:
                 # Through the KEDA interceptor, see scale-to-zero.yaml
                 name: {{ include "fridaybuilds-interceptor-service-name" $ }}
                 port:
-                  number: {{ $.Values.keda.interceptorPort }}
+                  number: {{ include "fridaybuilds-keda-interceptor-port" $ }}
                 {{- else }}
                 name: {{ include "epinio-truncate" $.Values.epinio.appName }}
                 port:
