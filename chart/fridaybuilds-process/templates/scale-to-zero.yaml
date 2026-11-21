@@ -14,9 +14,9 @@ metadata:
     {{- include "epinio-application.annotations" . | nindent 4 }}
 spec:
   type: ExternalName
-  externalName: {{ .Values.keda.interceptorService }}
+  externalName: {{ include "fridaybuilds-keda-interceptor-service" . }}
   ports:
-    - port: {{ .Values.keda.interceptorPort }}
+    - port: {{ include "fridaybuilds-keda-interceptor-port" . }}
       protocol: TCP
 ---
 # Matches the app's requests in the interceptor, counts them for scaling and holds them while the app wakes up
@@ -47,7 +47,7 @@ spec:
     concurrency:
       targetValue: 100
   timeouts:
-    readiness: {{ .Values.keda.wakeTimeout | quote }}
+    readiness: {{ include "fridaybuilds-keda-wake-timeout" . | quote }}
 {{- end }}
 {{- if $mode }}
 ---
@@ -72,6 +72,6 @@ spec:
   triggers:
     - type: external-push
       metadata:
-        scalerAddress: {{ .Values.keda.externalScalerAddress | quote }}
+        scalerAddress: {{ include "fridaybuilds-keda-external-scaler-address" . | quote }}
         interceptorRoute: {{ include "fridaybuilds-sleep-route-name" . | quote }}
 {{- end }}

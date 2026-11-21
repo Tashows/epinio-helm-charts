@@ -37,10 +37,13 @@
 image:
   pullPolicy: IfNotPresent
 
+# Optional values added after 0.1.44, commented out: Epinio upgrades releases with helm's --reuse-values, which keeps
+# the chart defaults a release was installed with, so the templates hold their defaults (see _helpers.tpl).
+#
 # Image of the init containers that prepare the pod (tmp cleanup, volume permissions). Pinned, so pods start without
 # checking the registry for a newer `latest` every time.
-initContainers:
-  image: busybox:1.37.0
+# initContainers:
+#   image: busybox:1.37.0
 
 imagePullSecrets: []
 
@@ -79,11 +82,11 @@ affinity: {}
 userConfig: {}
 
 # KEDA HTTP add-on, for workloads that scale to zero when idle (userConfig.sleepAfterSeconds, userConfig.sleepWithApp)
-keda:
-  # The add-on's interceptor proxy Service, which sleeping workloads' traffic goes through
-  interceptorService: keda-add-ons-http-interceptor-proxy.keda.svc.cluster.local
-  interceptorPort: 8080
-  # The add-on's external scaler, which feeds the interceptor's request counts to KEDA
-  externalScalerAddress: keda-add-ons-http-external-scaler.keda:9090
-  # How long the interceptor holds a request while a sleeping workload wakes up (then 504)
-  wakeTimeout: 60s
+# keda:
+#   # The add-on's interceptor proxy Service, which sleeping workloads' traffic goes through
+#   interceptorService: keda-add-ons-http-interceptor-proxy.keda.svc.cluster.local
+#   interceptorPort: 8080
+#   # The add-on's external scaler, which feeds the interceptor's request counts to KEDA
+#   externalScalerAddress: keda-add-ons-http-external-scaler.keda:9090
+#   # How long the interceptor holds a request while a sleeping workload wakes up (then 504)
+#   wakeTimeout: 60s
