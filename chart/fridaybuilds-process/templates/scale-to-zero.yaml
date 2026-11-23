@@ -69,6 +69,10 @@ spec:
   minReplicaCount: {{ .Values.epinio.replicaCount }}
   maxReplicaCount: {{ .Values.epinio.replicaCount }}
   cooldownPeriod: {{ include "fridaybuilds-sleep-after-seconds" . }}
+  advanced:
+    horizontalPodAutoscalerConfig:
+      # KEDA's default HPA name, keda-hpa-<ScaledObject name>, can exceed the 63 characters allowed
+      name: {{ include "epinio-truncate" .Values.epinio.appName }}
   triggers:
     - type: external-push
       metadata:
